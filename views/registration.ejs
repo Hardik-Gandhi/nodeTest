@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <title>Registration</title>
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="text-center text-primary">
+            <h2>Registration Form</h2>
+        </div>
+        <form id="registrationDATA" name="registrationDATA">
+            <div class="mb-3">
+                <label for="firstName" class="form-label">Firstname</label>
+                <input type="text" name="firstName" class="form-control" id="firstName" placeholder="Firstname">
+            </div>
+            <div class="mb-3">
+              <label for="lastName" class="form-label">Lastname</label>
+              <input type="text" name="lastName" class="form-control" id="lastName" placeholder="Lastname">
+            </div>
+            <div class="mb-3">
+                <label for="exampleInputEmail1" class="form-label">Email</label>
+                <input type="email" name="email" class="form-control" id="exampleInputEmail1" placeholder="user@gmail.com">
+              </div>
+            <div class="mb-3">
+              <label for="password" class="form-label">Password</label>
+              <input type="password" name="password" class="form-control" placeholder="******" id="password">
+            </div>
+            <div class="mb-3">
+                <label for="dateOfBirth" class="form-label">Date Of Birth</label>
+                <input type="text" name="dateOfBirth" class="form-control" id="dateOfBirth" placeholder="YYYY-MM-DD">
+            </div>
+            <div class="mb-3">
+                <label for="formFile" class="form-label">Profile Image</label>
+                <input class="form-control" accept="image/png, image/gif, image/jpeg" type="file" id="formFile">
+            </div>
+            <div class="text-center d-flex flex-column">
+                <button type="button" class="btn btn-primary" onclick="registrationSubmit()">Submit</button>
+                <a href="/login" class="link-primary text-decoration-none">Have an account?</a>
+            </div>
+        </form>
+    </div>
+    <div class="modal" tabindex="-1">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title text-center text-success">Success</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+              <p class="message">Registered Successfully</p>
+            </div>
+        </div>
+      </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+</body>
+<script>
+    function registrationSubmit() {
+        $('.modal').modal('hide');
+        let thisForm = document.getElementById('registrationDATA');
+        let formData = new FormData(thisForm);
+        let fileInput = document.getElementById('formFile');
+        console.log(fileInput.files[0]);
+        formData.append('profileImage', fileInput.files[0]);
+
+        $.ajax({
+         url: "/signUp",
+         type: 'POST',
+         data: formData,
+         cache: false,
+         contentType: false,
+         processData: false,
+         success: function (data) {
+            $('.modal-title').text('Success').addClass('text-success');
+            $('.message').text('Registered Successfully');
+            $('.modal').modal('show');
+            setTimeout(() => { window.location = '/login' }, 3000);
+         },
+         error: (err) => {
+            $('.modal-title').text('Error').addClass('text-danger');
+            $('.message').text(err.responseJSON.message);
+            $('.modal').modal('show');
+        }
+       });
+    }
+</script>
+</html>
